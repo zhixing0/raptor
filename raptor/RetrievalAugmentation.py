@@ -201,12 +201,12 @@ class RetrievalAugmentation:
             f"Successfully initialized RetrievalAugmentation with Config {config.log_config()}"
         )
 
-    def add_documents(self, docs):
+    def add_documents(self, docs: str | list[str]) -> None:
         """
         Adds documents to the tree and creates a TreeRetriever instance.
 
         Args:
-            docs (str): The input text to add to the tree.
+            docs (str | list[str]): The input text to add to the tree.
         """
         if self.tree is not None:
             user_input = input(

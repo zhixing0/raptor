@@ -257,7 +257,7 @@ class TreeBuilder:
 
         return leaf_nodes
 
-    def build_from_text(self, text: str, use_multithreading: bool = True) -> Tree:
+    def build_from_text(self, text: str | list[str], use_multithreading: bool = True) -> Tree:
         """Builds a golden tree from the input text, optionally using multithreading.
 
         Args:
@@ -268,7 +268,11 @@ class TreeBuilder:
         Returns:
             Tree: The golden tree structure.
         """
-        chunks = split_text(text, self.tokenizer, self.max_tokens)
+        if isinstance(text, str):
+            chunks = split_text(text, self.tokenizer, self.max_tokens)
+        else:
+            logging.info("chunks provided as text")
+            chunks = text
 
         logging.info("Creating Leaf Nodes")
 
