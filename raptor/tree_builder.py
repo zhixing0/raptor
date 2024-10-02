@@ -292,7 +292,7 @@ class TreeBuilder:
 
         all_nodes = copy.deepcopy(leaf_nodes)
 
-        root_nodes = self.construct_tree(all_nodes, all_nodes, layer_to_nodes)
+        root_nodes = self.construct_tree(all_nodes, all_nodes, layer_to_nodes, use_multithreading=use_multithreading)
 
         tree = Tree(all_nodes, root_nodes, leaf_nodes, self.num_layers, layer_to_nodes)
 

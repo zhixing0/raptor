@@ -24,6 +24,7 @@ class RetrievalAugmentationConfig:
         embedding_model=None,
         summarization_model=None,
         tree_builder_type="cluster",
+        use_multithreading=False,
         # New parameters for TreeRetrieverConfig and TreeBuilderConfig
         # TreeRetrieverConfig arguments
         tr_tokenizer=None,
@@ -45,7 +46,10 @@ class RetrievalAugmentationConfig:
         tb_summarization_model=None,
         tb_embedding_models=None,
         tb_cluster_embedding_model="OpenAI",
+        tb_clustering_params={},
     ):
+        self.use_multithreading = use_multithreading
+
         # Validate tree_builder_type
         if tree_builder_type not in supported_tree_builders:
             raise ValueError(
@@ -102,6 +106,7 @@ class RetrievalAugmentationConfig:
                 summarization_model=tb_summarization_model,
                 embedding_models=tb_embedding_models,
                 cluster_embedding_model=tb_cluster_embedding_model,
+                clustering_params=tb_clustering_params,
             )
 
         elif not isinstance(tree_builder_config, tree_builder_config_class):
@@ -165,6 +170,8 @@ class RetrievalAugmentation:
         """
         if config is None:
             config = RetrievalAugmentationConfig()
+        self.config = config
+        
         if not isinstance(config, RetrievalAugmentationConfig):
             raise ValueError(
                 "config must be an instance of RetrievalAugmentationConfig"
@@ -216,7 +223,7 @@ class RetrievalAugmentation:
                 # self.add_to_existing(docs)
                 return
 
-        self.tree = self.tree_builder.build_from_text(text=docs)
+        self.tree = self.tree_builder.build_from_text(text=docs, use_multithreading=self.config.use_multithreading)
         self.retriever = TreeRetriever(self.tree_retriever_config, self.tree)
 
     def retrieve(
